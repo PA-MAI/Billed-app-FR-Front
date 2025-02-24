@@ -17,7 +17,20 @@ export default class NewBill {
   }
   handleChangeFile = e => {
     e.preventDefault()
-    const file = this.document.querySelector(`input[data-testid="file"]`).files[0]
+    const fileInput = this.document.querySelector(`input[data-testid="file"]`)
+    const file = fileInput.files[0]
+    //autorise uniquement le telechargement de nouvelles factures avec les extensions jpeg,jpg,png
+    if (file) {
+        const allowedExtensions = ["jpg", "jpeg", "png"]
+        const fileExtension = file.name.split('.').pop().toLowerCase()
+
+        if (!allowedExtensions.includes(fileExtension)) {
+            alert("Seuls les fichiers JPG, JPEG et PNG sont autorisés.")
+            fileInput.value = "" // Réinitialise le champ de fichier
+            return
+        }
+      }
+    
     const filePath = e.target.value.split(/\\/g)
     const fileName = filePath[filePath.length-1]
     const formData = new FormData()

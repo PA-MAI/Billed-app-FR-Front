@@ -2,12 +2,12 @@
  * @jest-environment jsdom
  */
 
-import {screen, waitFor} from "@testing-library/dom"
+import {screen, waitFor,getByTestId} from "@testing-library/dom"
 import BillsUI from "../views/BillsUI.js"
 import { bills } from "../fixtures/bills.js"
 import { ROUTES_PATH} from "../constants/routes.js";
 import {localStorageMock} from "../__mocks__/localStorage.js";
-
+import userEvent from '@testing-library/user-event'
 import router from "../app/Router.js";
 
 describe("Given I am connected as an employee", () => {
@@ -26,6 +26,8 @@ describe("Given I am connected as an employee", () => {
       await waitFor(() => screen.getByTestId('icon-window'))
       const windowIcon = screen.getByTestId('icon-window')
       //to-do write expect expression
+      userEvent.hover(getByTestId('windows.icon'))
+      expect(windowIcon).toHaveStyle("opacity", "0.5");
 
     })
     test("Then bills should be ordered from earliest to latest", () => {
