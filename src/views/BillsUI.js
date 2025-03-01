@@ -1,15 +1,14 @@
 import VerticalLayout from './VerticalLayout.js'
 import ErrorPage from "./ErrorPage.js"
 import LoadingPage from "./LoadingPage.js"
-
 import Actions from './Actions.js'
-
+// responsabilité création des nouveaux bills à l'aide du formulaire
 const row = (bill) => {
   return (`
     <tr>
       <td>${bill.type}</td>
       <td>${bill.name}</td>
-      <td>${bill.date}</td>
+      <td>${bill.dateForm || bill.date}</td>
       <td>${bill.amount} €</td>
       <td>${bill.status}</td>
       <td>
@@ -20,7 +19,12 @@ const row = (bill) => {
   }
 
 const rows = (data) => {
-  return (data && data.length) ? data.map(bill => row(bill)).join("") : ""
+  return (data && data.length) ? 
+  [...data]
+    .sort((a, b) => {
+      return new Date(b.date) - new Date(a.date)
+    })
+  .map(bill => row(bill)).join("") : ""
 }
 
 export default ({ data: bills, loading, error }) => {

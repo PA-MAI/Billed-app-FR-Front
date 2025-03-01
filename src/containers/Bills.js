@@ -2,6 +2,8 @@ import { ROUTES_PATH } from '../constants/routes.js'
 import { formatDate, formatStatus } from "../app/format.js"
 import Logout from "./Logout.js"
 
+
+// responsabilité affichage des bills existants
 export default class {
   constructor({ document, onNavigate, store, localStorage }) {
     this.document = document
@@ -36,35 +38,27 @@ export default class {
         const bills = snapshot
         .map(doc => {
           try {
-            const rowDate = new Date(doc.date);
-            if (isNaN(rowDate)) throw new Error("Invalid date");
-
             return {
               ...doc,
-              rowDate: rowDate.toISOString(),  // Stocke la date en ISO pour tri
-              date: formatDate(doc.date), // Affichage seulement !
+              // Date brute pour le tri
+              date: doc.date,
+              // pour afficher le bon format DOM 
+              dateForm: formatDate(doc.date), 
               status: formatStatus(doc.status)
-            };
+            }
           } catch (e) {
-            console.log(e, 'for', doc);
+            //console.log(e, 'for', doc);
             return {
               ...doc,
-              date: doc.date, // On garde la date brute si elle est invalide
+              // date brute si elle est invalide
+              date: doc.date, 
               status: formatStatus(doc.status)
             };
           }
         })
-        .sort((a, b) => {
-          const dateDiff = new Date(b.rowDate) - new Date(a.rowDate);
+        
 
-          // Si les dates sont identiques, tri par ID pour un ordre stable
-          if (dateDiff === 0) {
-            return b.id.localeCompare(a.id);
-          }
-          return dateDiff;
-        });
-
-      console.log('length', bills.length);
+      //console.log('length', bills.length);
       return bills;
     });
 

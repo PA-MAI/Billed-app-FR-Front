@@ -7,6 +7,7 @@ import Login from "../containers/Login.js";
 import { ROUTES } from "../constants/routes";
 import { fireEvent, screen } from "@testing-library/dom";
 
+
 describe("Given that I am a user on login page", () => {
   describe("When I do not fill fields and I click on employee button Login In", () => {
     test("Then It should renders Login page", () => {
@@ -47,7 +48,64 @@ describe("Given that I am a user on login page", () => {
       expect(screen.getByTestId("form-employee")).toBeTruthy();
     });
   });
+  describe("When login fails, it should call createUser", () => {
+    test("Then createUser should be called", async () => {
+      document.body.innerHTML = LoginUI();
 
+      const inputData = {
+        email: "test@error.com",
+        password: "wrongpassword",
+      };
+
+      const inputEmailUser = screen.getByTestId("employee-email-input");
+      fireEvent.change(inputEmailUser, { target: { value: inputData.email } });
+
+      const inputPasswordUser = screen.getByTestId("employee-password-input");
+      fireEvent.change(inputPasswordUser, { target: { value: inputData.password } });
+
+      const form = screen.getByTestId("form-employee");
+
+      // Mock localStorage
+      Object.defineProperty(window, "localStorage", {
+        value: {
+          getItem: jest.fn(() => null),
+          setItem: jest.fn(() => null),
+        },
+        writable: true,
+      });
+
+      // Mock navigation
+      const onNavigate = jest.fn();
+
+      let PREVIOUS_LOCATION = "";
+
+      const storeMock = {
+        login: jest.fn(() => Promise.reject(new Error("Login failed"))), // Simule un échec de login
+      };
+
+      const loginInstance = new Login({
+        document,
+        localStorage: window.localStorage,
+        onNavigate,
+        PREVIOUS_LOCATION,
+        store: storeMock,
+      });
+
+      // Espionner createUser
+      const createUserSpy = jest.spyOn(loginInstance, "createUser").mockImplementation(() => {});
+
+      // Simuler la soumission du formulaire
+      const handleSubmit = jest.fn(loginInstance.handleSubmitEmployee);
+      form.addEventListener("submit", handleSubmit);
+      fireEvent.submit(form);
+
+      // Attendre que la promesse soit rejetée
+      await new Promise(process.nextTick);
+
+      // Vérifier que createUser a bien été appelée
+      expect(createUserSpy).toHaveBeenCalled();
+    });
+  });
   describe("When I do fill fields in correct format and I click on employee button Login In", () => {
     test("Then I should be identified as an Employee in app", () => {
       document.body.innerHTML = LoginUI();

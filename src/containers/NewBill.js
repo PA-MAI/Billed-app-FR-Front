@@ -17,6 +17,7 @@ export default class NewBill {
   }
   handleChangeFile = e => {
     e.preventDefault()
+    
     const fileInput = this.document.querySelector(`input[data-testid="file"]`)
     const file = fileInput.files[0]
     //autorise uniquement le telechargement de nouvelles factures avec les extensions jpeg,jpg,png
@@ -47,7 +48,7 @@ export default class NewBill {
         }
       })
       .then(({fileUrl, key}) => {
-        console.log(fileUrl)
+       // console.log(fileUrl)
         this.billId = key
         this.fileUrl = fileUrl
         this.fileName = fileName
@@ -55,7 +56,7 @@ export default class NewBill {
   }
   handleSubmit = e => {
     e.preventDefault()
-    console.log('e.target.querySelector(`input[data-testid="datepicker"]`).value', e.target.querySelector(`input[data-testid="datepicker"]`).value)
+    //console.log('e.target.querySelector(`input[data-testid="datepicker"]`).value', e.target.querySelector(`input[data-testid="datepicker"]`).value)
     const email = JSON.parse(localStorage.getItem("user")).email
     const bill = {
       email,

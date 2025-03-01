@@ -19,8 +19,7 @@ export const filteredBills = (data, status) => {
         // in prod environment
         const userEmail = JSON.parse(localStorage.getItem("user")).email
         selectCondition =
-          (bill.status === status) &&
-          ![...USERS_TEST, userEmail].includes(bill.email)
+          (bill.status === status) && ![...USERS_TEST, userEmail].includes(bill.email)
       }
 
       return selectCondition
@@ -144,9 +143,10 @@ export default class {
         .html("")
       this.counter ++
     }
-
+//Ajout de .off("click") pour 
     bills.forEach(bill => {
-      $(`#open-bill${bill.id}`).click((e) => this.handleEditTicket(e, bill, bills))
+     // console.log(`Ajout d'un event click à open-bill${bill.id}`);
+      $(`#open-bill${bill.id}`).off("click").click((e) => this.handleEditTicket(e, bill, bills))
     })
 
     return bills
@@ -160,7 +160,7 @@ export default class {
       .list()
       .then(snapshot => {
         const bills = snapshot
-        .map(doc => ({
+        .map(doc=> ({
           id: doc.id,
           ...doc,
           date: doc.date,
