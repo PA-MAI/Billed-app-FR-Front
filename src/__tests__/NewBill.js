@@ -15,34 +15,6 @@ import { formatDate } from "../app/format.js"
 import router from "../app/Router.js";
 
 
-jest.mock("../app/store", () => mockStore);
-
-beforeAll(() => {
-  document.body.innerHTML = ""; 
-  Object.defineProperty(window, "localStorage", { value: localStorageMock });
-  window.localStorage.setItem(
-     "user",
-     JSON.stringify({
-        type: "Employee",
-        email: "employee@test.tld",
-        status: "connected",
-     })
-  );
-
-  const root = document.createElement("div");
-  root.setAttribute("id", "root");
-  document.body.append(root);
-
- // console.log("DOM avant router :", document.body.innerHTML);
-  router();
- // console.log("DOM après router :", document.body.innerHTML);
-  
-  window.onNavigate(ROUTES_PATH.NewBill);
-});
-afterEach(() => {
-  document.body.innerHTML = "";
-   jest.clearAllMocks();
-});
 
 
 describe('Given I am connected as an employee and i am on NewBill Page', () => {
@@ -71,20 +43,47 @@ describe('Given I am connected as an employee and i am on NewBill Page', () => {
       //console.log("DOM après injection :", document.body.innerHTML);
       //const newBill= new NewBill({ document, onNavigate, store, localStorage: window.localStorage });
       //console.log("DOM de resultat:", newBill);
-      //expect(screen.getByText(bill.vat.value)).toBeTruthy()
+      expect(screen.findByText(bill.vat.value)).toBeTruthy()
       expect(screen.getByText(bill.type)).toBeTruthy()
-      //expect(screen.getByText(bill.commentary)).toBeTruthy()
-      //expect(screen.getByText(bill.name)).toBeTruthy()
+      expect(screen.findByText(bill.commentary)).toBeTruthy()
+      expect(screen.findByText(bill.name)).toBeTruthy()
       console.log("Recherche du texte :", bill.type, bill.name, bill.amount, bill.date); // Voir si un élément est trouvé
-      //expect(screen.getByText(bill.fileName)).toBeTruthy()
-      console.log("Date formatée :", formatDate(bill.date));
-     // expect(screen.getByText(formatDate(bill.date.toString))).toBeTruthy()
-      //expect(screen.getByText(bill.amount.toString())).toBeTruthy()
-      //expect(screen.getByText(bill.pct.toString())).toBeTruthy()
+      expect(screen.findByText(bill.fileName)).toBeTruthy()
+      //console.log("Date formatée :", formatDate(bill.date));
+      expect(screen.findByText(formatDate(bill.date))).toBeTruthy()
+      expect(screen.findByText(bill.amount.toString())).toBeTruthy()
+      expect(screen.findByText(bill.pct.toString())).toBeTruthy()
     })
   })
-  
 
+  jest.mock("../app/store", () => mockStore);
+
+  beforeAll(() => {
+    document.body.innerHTML = ""; 
+    Object.defineProperty(window, "localStorage", { value: localStorageMock });
+    window.localStorage.setItem(
+       "user",
+       JSON.stringify({
+          type: "Employee",
+          email: "employee@test.tld",
+          status: "connected",
+       })
+    );
+  
+    const root = document.createElement("div");
+    root.setAttribute("id", "root");
+    document.body.append(root);
+  
+   // console.log("DOM avant router :", document.body.innerHTML);
+    router();
+   // console.log("DOM après router :", document.body.innerHTML);
+    
+    window.onNavigate(ROUTES_PATH.NewBill);
+  });
+  afterEach(() => {
+    document.body.innerHTML = "";
+     jest.clearAllMocks();
+  });
 
   describe("When I upload a file with a correct extension", () => {
     test("Then I upload this file with a correct extension and no error message", async () => {
