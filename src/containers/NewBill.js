@@ -20,39 +20,43 @@ export default class NewBill {
     
     const fileInput = this.document.querySelector(`input[data-testid="file"]`)
     const file = fileInput.files[0]
-    //autorise uniquement le telechargement de nouvelles factures avec les extensions jpeg,jpg,png
+    
+    // Autorise uniquement les fichiers avec les extensions jpg, jpeg et png
     if (file) {
-        const allowedExtensions = ["jpg", "jpeg", "png"]
-        const fileExtension = file.name.split('.').pop().toLowerCase()
+      const allowedExtensions = ["jpg", "jpeg", "png"]
+      const fileExtension = file.name.split('.').pop().toLowerCase()
 
-        if (!allowedExtensions.includes(fileExtension)) {
-            alert("Seuls les fichiers JPG, JPEG et PNG sont autorisés.")
-            fileInput.value = "" // Réinitialise le champ de fichier
-            return
-        }
+      if (!allowedExtensions.includes(fileExtension)) {
+        alert("Seuls les fichiers JPG, JPEG et PNG sont autorisés.")
+        fileInput.value = "" // Réinitialise le champ de fichier
+        return
       }
+    }
     
     const filePath = e.target.value.split(/\\/g)
-    const fileName = filePath[filePath.length-1]
+    const fileName = filePath[filePath.length - 1]
     const formData = new FormData()
     const email = JSON.parse(localStorage.getItem("user")).email
     formData.append('file', file)
     formData.append('email', email)
-
-    this.store
-      .bills()
-      .create({
-        data: formData,
-        headers: {
-          noContentType: true
-        }
-      })
-      .then(({fileUrl, key}) => {
-       // console.log(fileUrl)
-        this.billId = key
-        this.fileUrl = fileUrl
-        this.fileName = fileName
-      }).catch(error => console.error(error))
+    
+    // Vérifie si this.store existe avant d'utiliser bills()
+    if (this.store) {
+      this.store
+        .bills()
+        .create({
+          data: formData,
+          headers: {
+            noContentType: true
+          }
+        })
+        .then(({ fileUrl, key }) => {
+          this.billId = key
+          this.fileUrl = fileUrl
+          this.fileName = fileName
+        })
+        .catch(error => console.error(error))
+    }
   }
   handleSubmit = e => {
     e.preventDefault()
