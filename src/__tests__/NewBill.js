@@ -54,13 +54,13 @@ afterEach(() => {
 describe("Given I am connected as an employee and I am on NewBill Page Test Suite", () => {
   describe('When extracting email from localStorage', () => {
     
-    test('Then it should retrieve the correct email', () => {
+    test('Then it should retrieve the correct email from localStorage', () => {
       const userData = JSON.parse(localStorage.getItem("user"));
       const email = userData ? JSON.parse(userData).email : undefined;
       expect(email).toBe("employee@test.tld");
     });
     // Simule un utilisateur sans email
-    test('Then it should handle missing email gracefully', () => {
+    test('Then it should handle missing email gracefully by returning undefined', () => {
       
       localStorage.setItem("user", JSON.stringify({})); 
       const userData = localStorage.getItem("user");
@@ -68,7 +68,7 @@ describe("Given I am connected as an employee and I am on NewBill Page Test Suit
       expect(email).toBeUndefined();
     });
     // Simule un localStorage vide
-    test('Then it should handle null localStorage gracefully', () => {
+    test('Then it should handle null localStorage gracefully by returning undefined', () => {
       localStorage.removeItem("user"); 
       const userData = localStorage.getItem("user");
       const email = userData ? JSON.parse(userData).email : undefined;
@@ -77,7 +77,7 @@ describe("Given I am connected as an employee and I am on NewBill Page Test Suit
   });
   //Teste que updateBill 
   describe("When submitting a new bill", () => {
-    test("Then updateBill should be called with the correct bill data", () => {
+    test("Then updateBill should be called with the correct bill data and navigate to Bills page", () => {
       const onNavigate = jest.fn();
       document.body.innerHTML = NewBillUI();
       const newBill = new NewBill({ document, onNavigate, store, localStorage: window.localStorage });
@@ -88,8 +88,8 @@ describe("Given I am connected as an employee and I am on NewBill Page Test Suit
     });
   });
   //Teste le catch du fichier NewBill.js en simulant une erreur sur update().
-  describe("When an error occurs during bill submission", () => {
-    test("Then it should catch the error and log it", async () => {
+  describe("When an error occurs during bill submission due to an API failure", () => {
+    test("Then it should catch the error and log it to the console", async () => {
       console.error = jest.fn(); // Mock console.error
       const onNavigate = jest.fn();
       document.body.innerHTML = NewBillUI();
@@ -119,9 +119,9 @@ describe("Given I am connected as an employee and I am on NewBill Page Test Suit
     });
   });
 
-  // Vérifie si l'utilisateur peut téléverser un fichier avec une extension correcte
-  describe("When I upload a file with a correct extension", () => {
-    test("Then it should allow the upload without error", async () => {
+  // Vérifie si l'utilisateur peut uploader un fichier avec une extension correcte
+  describe("When uploading a file with a valid extension (jpg, jpeg, png)", () => {
+    test("Then the file should be uploaded without triggering an error or alert", async () => {
       window.alert = jest.fn();
       const onNavigate = jest.fn();
       document.body.innerHTML = `<form data-testid="form-new-bill"><input data-testid="file" type="file" /></form>`;
