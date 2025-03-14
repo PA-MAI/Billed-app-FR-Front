@@ -14,7 +14,6 @@ export default class {
     const iconEye = document.querySelectorAll(`div[data-testid="icon-eye"]`)
     if (iconEye) iconEye.forEach(icon => {
       icon.addEventListener('click', () => this.handleClickIconEye(icon))
-      //console.log("handleClickIconEye exécuté")
     })
     new Logout({ document, localStorage, onNavigate })
   }
@@ -51,7 +50,7 @@ export default class {
               status: formatStatus(doc.status)
             }
           } catch (e) {
-            //console.log(e, 'for', doc);
+            
             return {
               ...doc,
               // date brute si elle est invalide
@@ -62,7 +61,7 @@ export default class {
         })
         
 
-      //console.log('length', bills.length);
+      
       return bills;
     });
 

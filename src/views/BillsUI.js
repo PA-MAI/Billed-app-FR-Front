@@ -2,7 +2,7 @@ import VerticalLayout from './VerticalLayout.js'
 import ErrorPage from "./ErrorPage.js"
 import LoadingPage from "./LoadingPage.js"
 import Actions from './Actions.js'
-// responsabilité création des nouveaux bills à l'aide du formulaire
+
 const row = (bill) => {
   return (`
     <tr>
